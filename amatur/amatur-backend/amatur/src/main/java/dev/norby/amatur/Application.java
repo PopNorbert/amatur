@@ -1,6 +1,5 @@
 package dev.norby.amatur;
 
-import dev.norby.amatur.contest.Contest;
 import dev.norby.amatur.contest.ContestRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +21,8 @@ public class Application {
     @Bean
     CommandLineRunner runner(ContestRepository contestRepository) {
         return args -> {
-            Contest contest = new Contest(2, "C5");
-            contestRepository.createContest(contest);
+            //Contest contest = new Contest(2, "C5");
+            //contestRepository.createContest(contest);
         };
     }
 

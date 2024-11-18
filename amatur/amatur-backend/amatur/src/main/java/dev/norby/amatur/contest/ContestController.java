@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contests")
@@ -16,37 +16,49 @@ public class ContestController {
         this.contestRepository = contestRepository;
     }
 
+    // Get all contests
     @GetMapping("")
-    List<Contest> getAll() {
-        return contestRepository.readAll();
+    public List<ContestDTO> getAll() {
+        List<Contest> contests = contestRepository.findAll();
+        return contests.stream()
+                .map(contest -> new ContestDTO(contest)) // Convert each Contest to ContestDTO
+                .collect(Collectors.toList()); // Collect into a List<ContestDTO>
     }
 
+
+    // Get a contest by ID
     @GetMapping("/{id}")
-    Contest getContest(@PathVariable Integer id) {
-        Optional<Contest> contest = contestRepository.readContest(id);
-        if (contest.isEmpty()) {
-            throw new ContestNotFoundException();
-        }
-        return contest.get();
+    ContestDTO getContest(@PathVariable Integer id) {
+        Contest contest =  contestRepository.findById(id)
+                .orElseThrow(ContestNotFoundException::new);
+        return new ContestDTO(contest);
     }
 
+    // Create a new contest
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
-    void createContest(@Valid @RequestBody Contest contest) {
-        contestRepository.createContest(contest);
+    Contest createContest(@Valid @RequestBody Contest contest) {
+        return contestRepository.save(contest);
     }
 
+    // Update an existing contest
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    void updateContest(@PathVariable Integer id, @RequestBody Contest contest) {
-        contestRepository.updateContest(id, contest);
+    void updateContest(@PathVariable Integer id, @Valid @RequestBody Contest contest) {
+        if (!contestRepository.existsById(id)) {
+            throw new ContestNotFoundException();
+        }
+        contest.setId(id);
+        contestRepository.save(contest);
     }
 
+    // Delete a contest by ID
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     void deleteContest(@PathVariable Integer id) {
-        contestRepository.deleteContest(id);
+        if (!contestRepository.existsById(id)) {
+            throw new ContestNotFoundException();
+        }
+        contestRepository.deleteById(id);
     }
-
-
 }

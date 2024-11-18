@@ -2,11 +2,13 @@ package dev.norby.amatur.contest;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.norby.amatur.match.Match;
 import jakarta.persistence.*;
 import lombok.*;
 import dev.norby.amatur.player.Player;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,6 +40,11 @@ public class Contest {
     @JsonManagedReference
     @Builder.Default
     private Set<Player> players = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "contest", cascade = CascadeType.PERSIST)
+    private Set<Match> matches = new HashSet<>();
+
 
     public void addPlayer(Player player)
     {

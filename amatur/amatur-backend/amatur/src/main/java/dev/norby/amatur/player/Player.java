@@ -3,6 +3,7 @@ package dev.norby.amatur.player;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.norby.amatur.contest.Contest;
+import dev.norby.amatur.match.Match;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,5 +30,17 @@ public class Player {
     @JsonBackReference
     @Builder.Default
     private Set<Contest> contests = new HashSet<>();
+
+    @OneToMany(mappedBy = "leftPlayer")
+    private Set<Match> matchesLeft = new HashSet<>();
+
+    @OneToMany(mappedBy = "rightPlayer")
+    private Set<Match> matchesRight = new HashSet<>();
+
+    public Set<Match> getMatches(){
+        Set<Match> res = new HashSet<>(matchesLeft);
+        res.addAll(matchesRight);
+        return res;
+    }
 
 }

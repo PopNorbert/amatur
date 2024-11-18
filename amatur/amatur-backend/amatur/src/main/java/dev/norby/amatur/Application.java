@@ -2,6 +2,7 @@ package dev.norby.amatur;
 
 import dev.norby.amatur.contest.Contest;
 import dev.norby.amatur.contest.ContestRepository;
+import dev.norby.amatur.match.Match;
 import dev.norby.amatur.player.Player;
 import dev.norby.amatur.player.PlayerController;
 import dev.norby.amatur.player.PlayerRepository;
@@ -30,13 +31,22 @@ public class Application {
     CommandLineRunner runner(ContestRepository contestRepository, PlayerRepository playerRepository) {
         return args -> {
             Player player1 = Player.builder().name("P1").build();
-
+            Player player2 = Player.builder().name("P2").build();
+            Player player3 = Player.builder().name("P3").build();
             Contest contest1 = Contest.builder()
                     .name("Contest 1")
-                    .playerLimit(2)
+                    .playerLimit(4)
                     .build();
 
             contest1.addPlayer(player1);
+            contest1.addPlayer(player2);
+            contest1.addPlayer(player3);
+            Match match1 = Match.builder().leftPlayer(player1).rightPlayer(player2).contest(contest1).build();
+            Match match2 = Match.builder().leftPlayer(player2).rightPlayer(player3).contest(contest1).build();
+            Match match3= Match.builder().leftPlayer(player1).rightPlayer(player3).contest(contest1).build();
+            contest1.getMatches().add(match1);
+            contest1.getMatches().add(match2);
+            contest1.getMatches().add(match3);
             contestRepository.save(contest1);
         };
     }

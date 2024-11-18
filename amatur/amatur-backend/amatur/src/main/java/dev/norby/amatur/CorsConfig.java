@@ -15,7 +15,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow CORS for all routes
-                        .allowedOrigins("http://localhost:4200") // Allow specific origin (Angular dev server)
+                        .allowedOrigins("http://localhost:5173") // Allow specific origin (Angular dev server)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

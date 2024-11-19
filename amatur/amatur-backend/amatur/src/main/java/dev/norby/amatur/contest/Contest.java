@@ -1,15 +1,13 @@
 package dev.norby.amatur.contest;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.norby.amatur.match.Match;
 import jakarta.persistence.*;
 import lombok.*;
-import dev.norby.amatur.player.Player;
+import dev.norby.amatur.user.User;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -29,30 +27,30 @@ public class Contest {
     private String name;
 
     @Column(nullable = false)
-    private Integer playerLimit;
+    private Integer userLimit;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
-            name = "contest_player",
+            name = "contest_users",
             joinColumns = @JoinColumn(name = "contest_id"),
-            inverseJoinColumns = @JoinColumn(name = "player_id")
+            inverseJoinColumns = @JoinColumn(name = "users_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     @Builder.Default
-    private Set<Player> players = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "contest", cascade = CascadeType.PERSIST)
     private Set<Match> matches = new HashSet<>();
 
 
-    public void addPlayer(Player player)
+    public void addUser(User user)
     {
-        if(players.size()>=playerLimit){
+        if(users.size()>=userLimit){
             throw new IllegalStateException("contest full");
         }
-        players.add(player);
-        player.getContests().add(this);
+        users.add(user);
+        user.getContests().add(this);
     }
 
 }

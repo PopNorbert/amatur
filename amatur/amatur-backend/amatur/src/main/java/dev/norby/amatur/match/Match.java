@@ -1,6 +1,6 @@
 package dev.norby.amatur.match;
 
-import dev.norby.amatur.player.Player;
+import dev.norby.amatur.user.User;
 import dev.norby.amatur.contest.Contest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,10 +18,10 @@ public class Match {
     private Integer id;
 
     @ManyToOne
-    private Player leftPlayer;
+    private User leftUser;
 
     @ManyToOne
-    private Player rightPlayer;
+    private User rightUser;
 
     @ManyToOne
     private Contest contest;

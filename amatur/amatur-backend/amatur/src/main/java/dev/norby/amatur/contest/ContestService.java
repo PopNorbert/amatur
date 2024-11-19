@@ -1,40 +1,43 @@
 package dev.norby.amatur.contest;
 
 import dev.norby.amatur.match.MatchDTO;
-import dev.norby.amatur.player.PlayerDTO;
+import dev.norby.amatur.match.MatchMapper;
+import dev.norby.amatur.user.UserDTO;
+import dev.norby.amatur.user.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-import dev.norby.amatur.player.Player;
 
 @Service
 @AllArgsConstructor
 public class ContestService {
     private final ContestRepository contestRepository;
+    private final UserMapper userMapper;
+    private final ContestMapper contestMapper;
+    private final MatchMapper matchMapper;
 
     public ContestDTO findById(Integer contestId) {
         Contest contest = contestRepository.findById(contestId)
-                .orElseThrow(() -> new RuntimeException("Contest not found"));
+                .orElseThrow(ContestNotFoundException::new);
 
-        return new ContestDTO(contest.getId(), contest.getName(), contest.getPlayerLimit());
+        return contestMapper.toDTO(contest);
     }
 
     public List<ContestDTO> findAll() {
         return contestRepository.findAll()
                 .stream()
-                .map(contest -> new ContestDTO(contest.getId(), contest.getName(), contest.getPlayerLimit()))
+                .map(contestMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<PlayerDTO> findPlayers(Integer contestId) {
+    public List<UserDTO> findUsers(Integer contestId) {
         Contest contest = contestRepository.findById(contestId)
                 .orElseThrow(ContestNotFoundException::new);
-        return contest.getPlayers()
+        return contest.getUsers()
                 .stream()
-                .map(player -> new PlayerDTO(player.getId(), player.getName()))
+                .map(userMapper::toDTO)
                 .collect(Collectors.toList());
     }
     public List<MatchDTO> findMatches(Integer contestId){
@@ -42,7 +45,31 @@ public class ContestService {
                 .orElseThrow(ContestNotFoundException::new);
         return contest.getMatches()
                 .stream()
-                .map(match -> new MatchDTO(match.getId(), match.getLeftScore(), match.getRightScore()))
+                .map(matchMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+    public ContestDTO save(ContestDTO contestDTO){
+        Contest contest = contestRepository.save(contestMapper.toEntity(contestDTO));
+        return contestMapper.toDTO(contest);
+    }
+
+    public void deleteById(Integer id) {
+        if (!contestRepository.existsById(id)){
+            throw new ContestNotFoundException();
+        }
+        contestRepository.deleteById(id);
+    }
+
+    public ContestDTO updateContest(Integer id, ContestDTO contestDTO) {
+        Contest contest = contestRepository.findById(id)
+                .orElseThrow(ContestNotFoundException::new);
+
+        // Update fields
+        contest.setName(contestDTO.name());
+        contest.setUserLimit(contestDTO.userLimit());
+
+        // Save and return updated DTO
+        Contest updatedContest = contestRepository.save(contest);
+        return contestMapper.toDTO(updatedContest);
     }
 }

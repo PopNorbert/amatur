@@ -25,10 +25,17 @@ public class Application {
     @Bean
     CommandLineRunner runner(ContestRepository contestRepository, UserRepository userRepository) {
         return args -> {
+            User user1 = User.builder()
+                            .firstname("U1")
+                                    .lastname("U1")
+                                            .username("U1")
+                                                    .password("U1")
+                                                            .role(Role.USER).build();
             Contest contest1 = Contest.builder()
                     .name("Contest 1")
                     .userLimit(4)
                     .build();
+            contest1.addUser(user1);
             contestRepository.save(contest1);
         };
     }

@@ -1,6 +1,5 @@
-package dev.norby.amatur.filter;
+package dev.norby.amatur.authentication;
 
-import dev.norby.amatur.JwtService;
 import dev.norby.amatur.user.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

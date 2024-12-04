@@ -30,6 +30,12 @@ public class ContestController {
         return contestService.findById(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{id}/join")
+    void joinContest(@PathVariable Integer id){
+        contestService.joinContest(id);
+    }
+
     @GetMapping("/{id}/users")
     List<UserDTO> findUsers(@PathVariable Integer id){
         return contestService.findUsers(id);

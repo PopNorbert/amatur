@@ -6,6 +6,7 @@ import dev.norby.amatur.match.Match;
 import jakarta.persistence.*;
 import lombok.*;
 import dev.norby.amatur.user.User;
+import org.springframework.security.core.parameters.P;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,8 +50,10 @@ public class Contest {
         if(users.size()>=userLimit){
             throw new IllegalStateException("contest full");
         }
+        if(users.contains(user)){
+            throw new IllegalStateException("already joined");
+        }
         users.add(user);
-        user.getContests().add(this);
     }
 
 }

@@ -2,6 +2,7 @@ package dev.norby.amatur.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.norby.amatur.authentication.Token;
 import dev.norby.amatur.contest.Contest;
 import dev.norby.amatur.match.Match;
 import jakarta.persistence.*;
@@ -42,6 +43,9 @@ public class User implements UserDetails {
 
     @Enumerated(value=EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @ManyToMany(mappedBy = "users")
     @JsonIgnore

@@ -1,4 +1,4 @@
-package dev.norby.amatur;
+package dev.norby.amatur.authentication;
 
 import dev.norby.amatur.user.User;
 import io.jsonwebtoken.Claims;
@@ -15,6 +15,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     private final String SECRET_KEY = "c4ebd6b646bf990319b59c2f77fd47e03d2b57d1f2c72d3c8f3102f33a3a2c24";
+    private  final TokenRepository tokenRepository;
+
+    public JwtService(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -25,7 +30,9 @@ public class JwtService {
     }
     public boolean isValid(String token, UserDetails user){
         String username = extractUsername(token);
-        return username.equals(user.getUsername()) && !isTokenExpired(token);
+        boolean isValidToken = tokenRepository.findByToken(token)
+                .map(t->!t.isLoggedOut()).orElse(false);
+        return username.equals(user.getUsername()) && !isTokenExpired(token) && isValidToken;
     }
 
     private boolean isTokenExpired(String token) {

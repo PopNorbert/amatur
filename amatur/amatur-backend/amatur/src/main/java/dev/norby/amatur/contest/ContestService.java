@@ -2,9 +2,10 @@ package dev.norby.amatur.contest;
 
 import dev.norby.amatur.match.MatchDTO;
 import dev.norby.amatur.match.MatchMapper;
-import dev.norby.amatur.user.UserDTO;
-import dev.norby.amatur.user.UserMapper;
+import dev.norby.amatur.user.*;
 import lombok.AllArgsConstructor;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class ContestService {
     private final UserMapper userMapper;
     private final ContestMapper contestMapper;
     private final MatchMapper matchMapper;
+    private final UserRepository userRepository;
+    private final ConversionService conversionService;
 
     public ContestDTO findById(Integer contestId) {
         Contest contest = contestRepository.findById(contestId)
@@ -71,5 +74,13 @@ public class ContestService {
         // Save and return updated DTO
         Contest updatedContest = contestRepository.save(contest);
         return contestMapper.toDTO(updatedContest);
+    }
+
+    public void joinContest(Integer id) {
+        Contest contest = contestRepository.findById(id)
+                .orElseThrow(ContestNotFoundException::new);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        contest.addUser(user);
+        contestRepository.save(contest);
     }
 }

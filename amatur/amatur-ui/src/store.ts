@@ -1,29 +1,15 @@
-// src/store.js
-import { configureStore, createSlice } from "@reduxjs/toolkit";
 
-// Slice for authentication state
-const authSlice = createSlice({
-  name: "auth",
-  initialState: { isLoggedIn: Boolean(localStorage.getItem("token")) },
-  reducers: {
-    login: (state) => {
-      state.isLoggedIn = true;
-    },
-    logout: (state) => {
-      state.isLoggedIn = false;
-    },
-  },
-});
+import { configureStore } from "@reduxjs/toolkit";
+import contestsReducer from "./features/contestsSlice";
+import authReducer from "./features/authSlice"
 
-export const { login, logout } = authSlice.actions;
-
-// Configure store
 const store = configureStore({
   reducer: {
-    auth: authSlice.reducer,
+    contests: contestsReducer,
+    auth: authReducer
   },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-
+export type AppDispatch = typeof store.dispatch;
 export default store;

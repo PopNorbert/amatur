@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {RootState} from "../store"; // Import RootState for type safety
 import api from "../api/axios"; // Axios instance with baseURL configured
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store";
+import { logout } from "../features/authSlice";
 
 const Header: React.FC = () => {
     const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);

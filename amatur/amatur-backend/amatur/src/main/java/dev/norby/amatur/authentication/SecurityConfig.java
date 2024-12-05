@@ -45,7 +45,7 @@ public class SecurityConfig {
                         req->req
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/contests/**", "/api/users/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/contests/{id}/join").hasRole("USER")
+                                .requestMatchers(HttpMethod.POST, "/api/contests/*/join").hasRole("USER")
                                 .requestMatchers(HttpMethod.POST, "/api/contests/**").hasRole("HOST")
                                 .requestMatchers(HttpMethod.PUT, "/api/contests/**").hasRole("HOST")
                                 .requestMatchers(HttpMethod.DELETE, "/api/contests/**").hasRole("HOST")
